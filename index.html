@@ -1,418 +1,281 @@
+
 <!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>펜차트 텍스트 추출사이트</title>
+  <title>회원권 내역 정리 | 은빈S</title>
 
   <!-- Noto Sans KR 폰트 로드 -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
-<style>
-  :root{
-    color-scheme: light;
-    --bg:#ffffff;
-    --primary:#f06292;
-    --primary-dark:#d81b60;
-    --primary-light:#fce4ec;
-    --text:#333333;
-    --card-bg:#ffffff;
-    --border: rgba(240, 98, 146, 0.2);
-    --shadow: 0 4px 20px rgba(0,0,0,0.05);
-    --radius: 20px;
-  }
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #ffffff; 
+      --primary: #f06292; 
+      --primary-dark: #d81b60; 
+      --primary-light: #fce4ec;
+      --text: #333333;
+      --card-bg: #ffffff;
+      --border: rgba(240, 98, 146, 0.2);
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
+      --radius: 20px;
+    }
 
-  *{
-    box-sizing:border-box;
-    -webkit-tap-highlight-color: transparent;
-    font-family:"Noto Sans KR", sans-serif !important;
-  }
+    * { 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent; 
+      font-family: "Noto Sans KR", sans-serif !important;
+    }
 
-  body{
-    margin:0;
-    padding:0;
-    background:var(--bg);
-    color:var(--text);
-    line-height:1.5;
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-  }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  header{
-    padding: 15px 20px;
-    text-align:center;
-    background: var(--primary-light);
-    border-bottom: 2px solid rgba(240,98,146,0.1);
-    position: sticky;
-    top:0;
-    z-index:100;
-    box-shadow: 0 4px 15px rgba(240,98,146,0.05);
-  }
+    header {
+      padding: 15px 20px;
+      text-align: center;
+      background: var(--primary-light); 
+      border-bottom: 2px solid rgba(240, 98, 146, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 4px 15px rgba(240, 98, 146, 0.05);
+    }
 
-  .header-row{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-  }
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+      color: #333333;
+      letter-spacing: -0.7px;
+    }
 
-  header h1{
-    margin:0;
-    font-size:20px;
-    font-weight:800;
-    color:#333;
-    letter-spacing:-0.7px;
-  }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 20px;
+      width: 100%;
+      flex: 1;
+    }
 
- .help-pill{
-  padding: 6px 12px;              /* ← 텍스트용 */
-  border-radius: 999px;           /* 알약 모양 */
-  border: 1px solid rgba(240,98,146,0.35);
-  background:#fff;
-  color: var(--primary-dark);
-  font-weight: 700;
-  font-size: 12.5px;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  white-space: nowrap;            /* ← 줄바꿈 방지 */
-  box-shadow: 0 6px 16px rgba(240,98,146,0.10);
-  transition: all 0.2s ease;
-}
-  .help-pill:hover{ background: var(--primary-light); transform: translateY(-1px); }
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
 
-  .container{
-    max-width: 1000px;
-    margin:0 auto;
-    padding: 26px 20px;
-    width:100%;
-    flex:1;
-  }
+    .options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
 
-  /* 상단 액션 바 */
-  .action-bar{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom: 22px;
-    gap:12px;
-    flex-wrap:wrap;
-  }
+    .option-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 9px 16px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(240, 98, 146, 0.04);
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+    .option-pill:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .option-pill input { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
 
-  .file-input-wrapper{
-    position:relative;
-    overflow:hidden;
-    display:inline-block;
-  }
-  .file-input-wrapper input[type=file]{
-    font-size:100px;
-    position:absolute;
-    left:0; top:0;
-    opacity:0;
-    cursor:pointer;
-  }
+    .actions { display: flex; gap: 10px; }
 
-  /* ✅ 버튼: 공통 크기(작게) */
-  .btn{
-    border:none;
-    padding: 9px 14px;
-    border-radius: 12px;
-    font-weight: 800;
-    cursor:pointer;
-    transition: all 0.2s ease;
-    font-size: 13px;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-  }
-  .btn:disabled{ opacity:0.5; cursor:not-allowed; }
+    .btn {
+      border: none;
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+    }
 
-  /* ✅ 버튼: 컬러 시스템 */
-  .btn-main{
-    background: var(--primary);
-    color:#fff;
-    box-shadow: 0 6px 18px rgba(240,98,146,0.22);
-  }
-  .btn-main:hover:not(:disabled){
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-  }
+    .btn-copy {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 15px rgba(240, 98, 146, 0.2);
+    }
+    .btn-copy:hover { 
+      background: var(--primary-dark);
+      transform: translateY(-2px); 
+      box-shadow: 0 6px 20px rgba(240, 98, 146, 0.25);
+    }
 
-  .btn-dark{
-    background:#222;
-    color:#fff;
-  }
-  .btn-dark:hover{
-    background:#000;
-    transform: translateY(-2px);
-  }
+    .btn-clear {
+      background: #fff;
+      color: #777;
+      border: 1px solid #eee;
+    }
+    .btn-clear:hover { background: #fafafa; color: #444; border-color: #ddd; }
 
-  .btn-clear{
-    background:#fff;
-    color: var(--primary-dark);
-    border: 1.5px solid rgba(240,98,146,0.45);
-  }
-  .btn-clear:hover{
-    background: var(--primary-light);
-    transform: translateY(-2px);
-  }
+    .editor-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      width: 100%;
+    }
 
-  /* 메인 레이아웃: 2단 */
-  .workflow-grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:20px;
-    width:100%;
-  }
+    @media (max-width: 850px) {
+      .editor-grid { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .actions { display: grid; grid-template-columns: 1fr 1fr; }
+    }
 
-  @media (max-width: 850px){
-    .workflow-grid{ grid-template-columns: 1fr; }
-    .action-bar{ flex-direction:column; align-items:stretch; }
-    .action-bar > div{ display:grid !important; grid-template-columns: 1fr 1fr; }
-  }
+    .panel {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+    }
+    .panel:focus-within { border-color: var(--primary); box-shadow: 0 12px 30px rgba(240, 98, 146, 0.1); }
 
-  .panel{
-    background: var(--card-bg);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-    display:flex;
-    flex-direction:column;
-    overflow:hidden;
-    box-shadow: var(--shadow);
-    height: 600px;
-  }
+    .panel-header {
+      padding: 16px 20px;
+      background: #fff;
+      border-bottom: 1px solid #f9f9f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-  .panel-header{
-    padding: 16px 20px;
-    background:#fff;
-    border-bottom: 1px solid #f3f3f3;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
+    .panel-title { font-size: 14px; font-weight: 700; color: #555; }
+    
+    .status-badge {
+      font-size: 11px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+      border: 1px solid rgba(240, 98, 146, 0.1);
+    }
 
-  .panel-title{
-    font-size:13px;
-    font-weight:800;
-    color:#666;
-    display:flex;
-    align-items:center;
-    gap:6px;
-  }
-  .panel-title span{ color: var(--primary); }
+    textarea {
+      width: 100%;
+      height: 520px;
+      padding: 20px;
+      border: none;
+      resize: none;
+      font-size: 14px;
+      line-height: 1.8;
+      background: transparent;
+      outline: none;
+      color: var(--text);
+    }
+    
+    #output { background: #fdfdfd; color: #444; }
 
-  .status-badge{
-    font-size:10px;
-    padding: 3px 10px;
-    border-radius: 20px;
-    background:#f5f5f5;
-    color:#999;
-    font-weight:800;
-  }
-  .status-badge.active{
-    background: var(--primary-light);
-    color: var(--primary-dark);
-  }
+    .panel-footer {
+      padding: 14px 20px;
+      font-size: 12px;
+      background: #fafafa;
+      border-top: 1px solid #f5f5f5;
+      color: #999;
+    }
 
-  .content-area{
-    flex:1;
-    padding:0;
-    position:relative;
-    display:flex;
-    flex-direction:column;
-  }
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #9e9e9e;
+      letter-spacing: 0.3px;
+      font-weight: 500;
+      margin-top: 10px;
+    }
 
-  textarea{
-    width:100%;
-    height:100%;
-    padding: 24px;
-    border:none;
-    resize:none;
-    font-size:14px;
-    line-height:1.8;
-    background:transparent;
-    outline:none;
-    color: var(--text);
-  }
-  #formattedOutput{ background:#fdfdfd; }
-
-  .panel-footer{
-    padding: 14px 20px;
-    font-size:11px;
-    background:#fafafa;
-    border-top: 1px solid #f1f1f1;
-    color:#aaa;
-  }
-
-  footer{
-    padding: 26px 0;
-    text-align:center;
-    font-size:13px;
-    color:#bbb;
-    font-weight:500;
-  }
-
-  #toast{
-    position:fixed;
-    bottom:40px;
-    left:50%;
-    transform: translateX(-50%) translateY(100px);
-    background:#333;
-    color:#fff;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-size:13px;
-    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index:1000;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  }
-  #toast.show{ transform: translateX(-50%) translateY(0); }
-
-  .loading-overlay{
-    position:absolute;
-    inset:0;
-    background: rgba(255,255,255,0.85);
-    display:none;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    z-index:10;
-  }
-  .spinner{
-    width:32px;
-    height:32px;
-    border:3px solid var(--primary-light);
-    border-top:3px solid var(--primary);
-    border-radius:50%;
-    animation: spin 1s linear infinite;
-  }
-  @keyframes spin{ 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
-
-  /* ✅ 모달 */
-  .modal-overlay{
-    position:fixed;
-    inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:18px;
-    background: rgba(0,0,0,0.35);
-    z-index:2000;
-  }
-  .modal-overlay.show{ display:flex; }
-
-  .modal-card{
-    width: min(720px, 100%);
-    background:#fff;
-    border-radius: 22px;
-    border: 1px solid rgba(240,98,146,0.22);
-    box-shadow: 0 18px 60px rgba(0,0,0,0.22);
-    overflow:hidden;
-  }
-  .modal-header{
-    padding: 16px 18px;
-    background: var(--primary-light);
-    border-bottom: 1px solid rgba(240,98,146,0.15);
-    box-shadow: 0 8px 20px rgba(240,98,146,0.08);
-  }
-  .modal-title{
-    font-weight:900;
-    font-size:15px;
-    color:#222;
-  }
-  .modal-body{
-    padding: 16px 18px;
-    max-height: min(70vh, 560px);
-    overflow:auto;
-    font-size:13.5px;
-    line-height:1.75;
-    color:#333;
-  }
-  .guide-list{ margin:0; padding-left:18px; }
-  .guide-list > li{ margin-bottom:12px; }
-  .guide-list ol{ margin-top:6px; padding-left:18px; }
-  .guide-warn{ color: var(--primary-dark); font-weight:900; }
-
-  .modal-footer{
-    padding: 14px 18px;
-    background:#fafafa;
-    border-top:1px solid #f2f2f2;
-    display:flex;
-    justify-content:flex-end;
-  }
-
-  .btn-guide-close{
-    background: var(--primary);
-    color:#fff;
-    box-shadow: 0 6px 18px rgba(240,98,146,0.22);
-  }
-  .btn-guide-close:hover{
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-  }
-</style>
-
+    #toast {
+      position: fixed;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #333;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
 </head>
 
 <body>
-<header>
-  <div class="header-row">
-    <h1>펜차트 텍스트 자동추출</h1>
-    <button id="btnGuide" class="help-pill" type="button" aria-label="사이트 사용">사이트 사용법</button>
-  </div>
-</header>
-
+  <header>
+    <h1>회원권 내역 문자 발송</h1>
+  </header>
 
   <div class="container">
-    <div class="action-bar">
-      <div style="display: flex; gap: 8px;">
-        <div class="file-input-wrapper">
-          <button class="btn btn-main" id="btnAttachUI">1.차트 이미지 첨부</button>
-          <input type="file" id="chartUpload" accept="image/*">
-        </div>
-        <button id="btnExtract" class="btn btn-main" disabled>2.텍스트 추출</button>
-        <button id="btnReset" class="btn btn-clear" type="button">초기화</button>
+    <div class="toolbar">
+      <div class="options">
+        <label class="option-pill">
+          <input type="checkbox" id="showMembership" checked>
+          <span>보유 회원권 정보</span>
+        </label>
+        <label class="option-pill">
+          <input type="checkbox" id="showPetitInfo">
+          <span>쁘띠 가능시술 안내</span>
+        </label>
       </div>
-            <div style="display: flex; gap: 8px;">
-        <button id="btnFormat" class="btn btn-dark">3.텍스트 정리</button>
-        <button id="btnCopy" class="btn btn-main">4.정리결과 복사</button>
+      <div class="actions">
+        <button id="btnClear" class="btn btn-clear">CLEAR</button>
+        <button id="btnCopy" class="btn btn-copy">결과 복사</button>
       </div>
     </div>
 
-    <div class="workflow-grid">
-      
-      <!-- 1단계: 추출된 원본 텍스트 -->
+    <div class="editor-grid">
       <section class="panel">
         <div class="panel-header">
-          <span class="panel-title"><span>Step 1.</span> 추출된 차트</span>
-          <span id="step1Status" class="status-badge">대기</span>
+          <span class="panel-title">차트입력</span>
+          <span id="inputStatus" class="status-badge">READY</span>
         </div>
-        <div class="content-area">
-          <div id="loadingExtract" class="loading-overlay">
-            <div class="spinner"></div>
-            <p style="font-size: 12px; margin-top: 12px; color: var(--primary); font-weight: 700;">차트AI분석 중...</p>
-          </div>
-          <textarea id="rawText" placeholder="첨부 후 '텍스트 추출' 버튼을 누르거나 여기에 직접 입력하세요."></textarea>
+        <textarea id="input" placeholder="차트 텍스트"></textarea>
+        <div class="panel-footer">
+          회원권 정보, 차감항목, 잔액 등이 포함된 텍스트 입력
         </div>
-        <div class="panel-footer">차트에서 AI가 추출한 텍스트입니다.</div>
       </section>
 
-      <!-- 2단계: 정제된 결과 텍스트 -->
       <section class="panel">
         <div class="panel-header">
-          <span class="panel-title"><span>Step 2.</span> 정리된 결과</span>
-          <span id="step2Status" class="status-badge">대기</span>
+          <span class="panel-title">문자 발송용 변환결과</span>
+          <span id="outputStatus" class="status-badge">WAITING</span>
         </div>
-        <div class="content-area">
-          <textarea id="formattedOutput" readonly placeholder="텍스트 정리 버튼을 누르면 추출된 텍스트가 규칙에 따라 정리되어 표시됩니다."></textarea>
+        <textarea id="output" readonly placeholder="변환된 문구가 여기에 표시됩니다."></textarea>
+        <div class="panel-footer" id="msgBox">
+          데이터를 입력하면 문구가 자동으로 생성됩니다.
         </div>
-        <div class="panel-footer">정리가 완료된 텍스트입니다.</div>
       </section>
-
     </div>
 
     <footer>
@@ -420,268 +283,150 @@
     </footer>
   </div>
 
-  <div id="toast">복사 완료</div>
-<!-- ✅ 사용법 팝업 시작 -->
-<div id="guideModal" class="modal-overlay" aria-hidden="true">
-  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
-    <div class="modal-header">
-      <div id="guideTitle" class="modal-title">사이트 매뉴얼</div>
-    </div>
-
-    <div class="modal-body">
-      <ol class="guide-list">
-        <li>
-          <b>CRM에서 차트 이미지 저장</b>
-          <ol>
-            <li>CRM에서 펜차트 &gt; 상단 메뉴 중 <b>[선택]</b> 버튼 클릭</li>
-            <li>텍스트 추출할 차트를 오래된 순서대로 2개 선택 후 <b>[비교]</b> 버튼 클릭</li>
-            <li>2장의 차트 비교 화면이 뜨면 화면 캡쳐해서 저장</li>
-            <li>참고: 3장부터는 이미지 속 텍스트 선명도 떨어져서 인식률 저하되므로 최대 2장까지만 할 것!</li>
-          </ol>
-        </li>
-
-        <li>
-          <b>차트 텍스트 추출</b>
-          <ol>
-            <li>본 사이트의 <b>[차트 이미지 첨부]</b> 버튼 클릭 → 저장한 차트 이미지 불러오기</li>
-            <li><b>[텍스트 추출]</b> 버튼 클릭</li>
-          </ol>
-        </li>
-
-        <li>
-          <b>텍스트 정리 &amp; 복사</b>
-          <ol>
-            <li><b>[텍스트 정리]</b> 버튼 클릭 <span class="guide-warn">*중요!*</span></li>
-            <li><b>[정리결과 복사]</b> 버튼 클릭해 메모장에 텍스트 붙여넣기</li>
-            <li><span class="guide-warn">*가장 중요!*</span><b>실제 펜차트와 대조해 최종 확인 및 편집하기</b> </li>
-            <li>특히 취소선 있는 텍스트는 인식 실패 확률 높으므로 꼭 체크!</b></li>
-          </ol>
-        </li>
-      </ol>
-    </div>
-
-    <div class="modal-footer">
-      <button id="btnGuideClose" class="btn btn-guide-close" type="button">닫기</button>
-    </div>
-  </div>
-</div>
-<!-- ✅ 사용법 팝업 끝 -->
-
+  <div id="toast">텍스트 복사 완료</div>
 
   <script>
- const GAS_URL = "https://script.google.com/macros/s/AKfycbybGC7lG8RtYE6zh4Dz11pU0oQyoBYs-AsgZfvKWYu9iyKMGVMHbPLGlR6iDde9aogs2Q/exec";
-    const chartUpload = document.getElementById('chartUpload');
-    const btnAttachUI = document.getElementById('btnAttachUI');
-    const btnExtract = document.getElementById('btnExtract');
-    const btnFormat = document.getElementById('btnFormat');
-    const btnCopy = document.getElementById('btnCopy');
-    const btnReset = document.getElementById('btnReset');
+    const elInput = document.getElementById('input');
+    const elOutput = document.getElementById('output');
+    const elShowMembership = document.getElementById('showMembership');
+    const elShowPetitInfo = document.getElementById('showPetitInfo');
+    const elBtnCopy = document.getElementById('btnCopy');
+    const elBtnClear = document.getElementById('btnClear');
+    const elToast = document.getElementById('toast');
+    const elStatus = document.getElementById('inputStatus');
+    const elOutStatus = document.getElementById('outputStatus');
 
-    const rawText = document.getElementById('rawText');
-    const formattedOutput = document.getElementById('formattedOutput');
-    const toast = document.getElementById('toast');
+    // 오늘 날짜 구하기 (yy.MM.dd 형식)
+    function getToday() {
+      const now = new Date();
+      const yy = String(now.getFullYear()).slice(-2);
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      return `${yy}.${mm}.${dd}`;
+    }
 
-    const st1 = document.getElementById('step1Status');
-    const st2 = document.getElementById('step2Status');
+    function formatLine(line) {
+      if (!line) return "";
+      
+      let formatted = line.trim()
+        .replace(/1회차/g, "")           // 1회차 제거
+        .replace(/\b1-1\b/g, "")         // 1-1 단독 표기 제거
+        .replace(/(\d+)-1/g, "$1회")     // 횟수 변환 (예: 5-1 -> 5회)
+        .replace(/\(하이\)/g, "(국산일반)")  // 대체어: 하이
+        .replace(/\(비에녹스\)/g, "(국산 고순도)"); // 대체어: 비에녹스
+      
+      return formatted.replace(/\s+/g, " ").trim();
+    }
 
-    // 파일 선택 시 버튼 상태 변경
-    chartUpload.addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (file) {
-        btnAttachUI.textContent = `✅ ${file.name.substring(0, 10)}...`;
-        btnExtract.disabled = false;
-        showToast("추출할 이미지가 준비되었습니다.");
+    function process() {
+      const raw = elInput.value.trim();
+      if (!raw) {
+        elOutput.value = "";
+        elStatus.textContent = "READY";
+        elOutStatus.textContent = "WAITING";
+        return;
       }
-    });
 
-// 텍스트 추출 (GAS 실제 연동)
-btnExtract.addEventListener('click', () => {
-  const file = chartUpload.files[0];
-  if (!file) { showToast("차트 이미지를 첨부하세요."); return; }
+      const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
+      const today = getToday();
+      
+      let membership = "";
+      let date = today; // 기본값은 오늘 날짜
+      let usageItems = [];
+      let total = "";
+      let balance = "";
 
-  const loader = document.getElementById('loadingExtract');
-  loader.style.display = 'flex';
+      // 데이터 파싱 루프
+      lines.forEach(line => {
+        // 1. 회원권 정보 및 구매일 파싱 (괄호 안의 날짜 패턴 매칭)
+        const membershipMatch = line.match(/\(([^/()]+)\/(\d{2}\.\d{2}\.\d{2})\)/);
+        if (membershipMatch) {
+          const buyDate = membershipMatch[2];
+          date = buyDate; // 차감 내역에 사용할 날짜 업데이트
+          const namePart = line.replace(/\(([^/()]+)\/(\d{2}\.\d{2}\.\d{2})\)/, "").trim();
+          membership = `${namePart}(${buyDate} 구매)`;
+          return;
+        }
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    const base64 = reader.result.split(",")[1];
+        // 2. 총액 파싱
+        if (line.startsWith("총")) {
+          total = line;
+          return;
+        }
 
-    google.script.run
-      .withSuccessHandler((text) => {
-        loader.style.display = 'none';
-        rawText.value = text;
-        st1.textContent = '추출완료';
-        st1.classList.add('active');
-        showToast("AI 분석 완료");
-      })
-      .withFailureHandler((err) => {
-        loader.style.display = 'none';
-        showToast("AI 분석 실패");
-      })
-      .processImage(base64, file.type); // Code.gs의 processImage 호출
-  };
+        // 3. 잔액 파싱
+        if (line.includes("잔액:")) {
+          balance = line;
+          return;
+        }
 
-  reader.readAsDataURL(file);
-});
+        // 4. 차감 항목 (가격 '원'이 포함된 경우)
+        if (line.includes("원")) {
+          usageItems.push(formatLine(line));
+        }
+      });
 
+      // 최종 문구 조립
+      let result = "안녕하세요~ 블리비 홍대점의 담당실장 가은빈입니다♡ 내원해주셔서 감사드리며 회원권 이용 내역 안내 드립니다.\n\n";
 
+      if (elShowMembership.checked && membership) {
+        result += `■보유 회원권\n${membership}\n\n`;
+      }
 
-    // 양식 정리
-// ✅ 웹페이지용 finalize (rawText -> formattedOutput)
-btnFormat.addEventListener('click', () => {
-  const input = rawText.value || "";
-  if (!input.trim()) {
-    showToast("원본 텍스트가 없습니다.");
-    return;
-  }
+      if (usageItems.length > 0) {
+        result += `■차감내역(${date})\n`;
+        usageItems.forEach(item => {
+          result += `${item}\n`;
+        });
+        if (total) result += `${total}\n`;
+        result += `※부가세 포함 금액\n\n`;
+      }
 
-  // ✅ 원본 줄 구조 그대로 유지 (빈 줄 포함)
-  const lines = input.split(/\r?\n/);
+      if (balance) {
+        result += `■회원권 잔액(${date})\n`;
+        result += `${balance}\n\n`;
+      }
 
-  const nameList = "채은|새미|채린|윤아|윤아2|수연|주현|지원|유진|혜연|선주|혜은|유비|하츠네|지수";
-  const nameRegex = new RegExp(`(\\/?\\s*)?(${nameList})(차감)?`, "g");
-  const kwPattern = /(승모근|이마|눈가|미간|자갈턱|종아리|허벅지|눈밑|입꼬리|스킨|사각턱|측두근|턱|광대|보상근|인중|침샘|주름)\s*(?:btx|b)/gi;
-  const fillerPattern = /(팔자|옆볼|눈밑고랑|눈밑|앞볼|미간|이마|관자|관자놀이|입술|애교|입꼬리|코|콧대|턱|턱끝|마리오넷|주름|볼)\s*f/gi;
+      if (elShowPetitInfo.checked) {
+        result += `■쁘띠 가능시술\n제모/보톡스/필러/인모드/슈링크 1회/실리프팅/점 사마귀 비립종 제거/면역수액주사/윤곽주사/블리비V주사/블리비S주사\n\n`;
+      }
 
-const out = [];
+      result += `오늘도 사랑스럽고 행복한 하루 보내세요♡ 감사합니다.\n\n`;
+      result += `문의 및 예약\n카카오톡 > 블리비의원 홍대\n전화문의 > 1833-2141`;
 
-for (const line of lines) {
-  // ✅ 빈 줄은 그대로 유지 (원하면 유지, 원치 않으면 continue로 바꿔도 됨)
-  if (line == null) { out.push(""); continue; }
+      elOutput.value = result;
+      elStatus.textContent = "DONE";
+      elOutStatus.textContent = "COMPLETED";
+    }
 
-  let v = String(line);
+    function showToast(msg) {
+      elToast.textContent = msg;
+      elToast.classList.add('show');
+      setTimeout(() => elToast.classList.remove('show'), 2000);
+    }
 
-  // "\*" → "*" 복원
-  v = v.replace(/\\\*/g, "*");
-
-  // 앞뒤 공백 정리
-  v = v.trim();
-
-  // ✅ (선택) 맨 앞 * 제거(원하면 주석 해제)
-  // v = v.replace(/^\*+/, "");
-
-  // ✅ 삭제 조건: 특정 문자/단어로 시작하면 제외
-  // (빈 줄은 위에서 이미 처리됨)
-  if (
-    v.startsWith("ㄴ") ||
-    v.startsWith("L") ||
-    v.startsWith("★") ||
-    v.startsWith("특이사항") ||
-    v.startsWith("이름") ||
-    v.startsWith("내원경로") ||
-    v.startsWith("~")
-  ) {
-    continue; // ← 이 줄이 "삭제" 역할
-  }
-
-  // "1-1" 제거
-  v = v.replace(/1-1/g, "");
-
-  // 단어 치환
-  v = v.replace(/스보/g, "스킨보톡스");
-  v = v.replace(/브제/g, "브라질리언 제모");
-  v = v.replace(/얼전/g, "얼굴전체");
-  v = v.replace(/풀페이스/g, "얼굴전체");
-  v = v.replace(/풀페/g, "얼굴전체");
-  v = v.replace(/겨제/g, "겨드랑이 제모");
-  v = v.replace(/잔금/g, "잔액");
-  v = v.replace(/ta/g, "염증주사");
-  v = v.replace(/TA/g, "염증주사");
-  v = v.replace(/마크뷰/g, "");
-  v = v.replace(/구득권/g, "구독권");
-  v = v.replace(/셀바이오/g, "셀바이브");
-  v = v.replace(/쁘잔/g, "잔액");
-  // ✅ s.v / s,v / sv / SV / S.V 등 → 서비스
-v = v.replace(/\bs[\.,]?\s*v\b/gi, "서비스");
-
-
-  // (선택) 이름 제거 유지하고 있으면 여기도 그대로 둬
-  v = v.replace(nameRegex, "");
-
-  // 잔액 표기 통일
-  v = v.replace(/(잔여|잔액|잔)([:\)>]|\s|>)?/g, "잔액:");
-  v = v.replace(/잔액:+/g, "잔액:");
-
-  // 보톡스/필러 보정
-  v = v.replace(kwPattern, (match, kw) => kw + "보톡스");
-  v = v.replace(fillerPattern, (match, kw) => kw + "필러");
-
-  out.push(v);
-}
-
-formattedOutput.value = out.join("\n");
-
-
-  st2.textContent = '정리완료';
-  st2.classList.add('active');
-  showToast("양식 정리가 완료되었습니다.");
-});
-
-
-
-    // 결과 복사
-    btnCopy.addEventListener('click', () => {
-      if (!formattedOutput.value) return;
-      formattedOutput.select();
+    elBtnCopy.addEventListener('click', () => {
+      if (!elOutput.value) return;
+      elOutput.select();
       try {
         document.execCommand('copy');
-        showToast("텍스트를 복사했습니다.");
+        showToast("텍스트 복사 완료");
       } catch (err) {
         showToast("복사 실패");
       }
     });
 
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
-    }
+    elBtnClear.addEventListener('click', () => {
+      elInput.value = "";
+      process();
+      elInput.focus();
+    });
 
-// ✅ 사용법 팝업 열기/닫기 (닫기 버튼 1개 버전)
-const btnGuide = document.getElementById('btnGuide');
-const guideModal = document.getElementById('guideModal');
-const btnGuideClose = document.getElementById('btnGuideClose');
+    elInput.addEventListener('input', process);
+    elShowMembership.addEventListener('change', process);
+    elShowPetitInfo.addEventListener('change', process);
 
-function openGuide() {
-  guideModal.classList.add('show');
-  guideModal.setAttribute('aria-hidden', 'false');
-}
-
-function closeGuide() {
-  guideModal.classList.remove('show');
-  guideModal.setAttribute('aria-hidden', 'true');
-}
-
-btnGuide.addEventListener('click', openGuide);
-btnGuideClose.addEventListener('click', closeGuide);
-
-// 바깥 배경 클릭하면 닫기
-guideModal.addEventListener('click', (e) => {
-  if (e.target === guideModal) closeGuide();
-});
-
-// ESC 누르면 닫기
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && guideModal.classList.contains('show')) closeGuide();
-});
-
-// ✅ 초기화: 파일/텍스트/상태 리셋
-btnReset.addEventListener('click', () => {
-  chartUpload.value = "";
-  btnAttachUI.textContent = "차트 이미지 첨부";
-  btnExtract.disabled = true;
-
-  rawText.value = "";
-  formattedOutput.value = "";
-
-  st1.textContent = "대기";
-  st1.classList.remove('active');
-  st2.textContent = "대기";
-  st2.classList.remove('active');
-
-  showToast("초기화 완료");
-});
-
+    process();
   </script>
 </body>
 </html>
