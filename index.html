@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>고객안내용 차트수정</title>
+  <title>회원권 내역 정리 | 은빈S</title>
 
-  <!-- Pretendard 폰트 적용 -->
-  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <!-- Noto Sans KR 폰트 로드 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
       color-scheme: light;
       --bg: #ffffff; 
-      --primary: #f06292; /* 메인 핑크 */
+      --primary: #f06292; 
       --primary-dark: #d81b60; 
-      --primary-light: #fce4ec; /* 배경 핑크 */
-      --text: #373d49; /* Sophisticated dark grey */
-      --text-light: #6b7280;
+      --primary-light: #fce4ec;
+      --text: #333333;
       --card-bg: #ffffff;
       --border: rgba(240, 98, 146, 0.2);
       --shadow: 0 4px 20px rgba(0, 0, 0, 0.05); 
@@ -26,15 +27,15 @@
     * { 
       box-sizing: border-box; 
       -webkit-tap-highlight-color: transparent; 
-      font-family: "Pretendard", "Noto Sans KR", sans-serif !important;
-      color: var(--text);
+      font-family: "Noto Sans KR", sans-serif !important;
     }
 
     body {
       margin: 0;
       padding: 0;
       background-color: var(--bg);
-      line-height: 1.6;
+      color: var(--text);
+      line-height: 1.5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -55,7 +56,7 @@
       margin: 0;
       font-size: 20px;
       font-weight: 700;
-      color: var(--text);
+      color: #333333;
       letter-spacing: -0.7px;
     }
 
@@ -69,11 +70,37 @@
 
     .toolbar {
       display: flex;
-      justify-content: flex-end;
+      flex-wrap: wrap;
+      justify-content: space-between;
       align-items: center;
       gap: 12px;
       margin-bottom: 24px;
     }
+
+    .options {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .option-pill {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 9px 16px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(240, 98, 146, 0.04);
+      transition: all 0.2s ease;
+      color: var(--text);
+    }
+    .option-pill:hover { border-color: var(--primary); transform: translateY(-1px); }
+    .option-pill input { width: 15px; height: 15px; accent-color: var(--primary); cursor: pointer; }
 
     .actions { display: flex; gap: 10px; }
 
@@ -89,7 +116,7 @@
 
     .btn-copy {
       background: var(--primary);
-      color: white !important;
+      color: white;
       box-shadow: 0 4px 15px rgba(240, 98, 146, 0.2);
     }
     .btn-copy:hover { 
@@ -100,10 +127,10 @@
 
     .btn-clear {
       background: #fff;
-      color: var(--text-light) !important;
+      color: #777;
       border: 1px solid #eee;
     }
-    .btn-clear:hover { background: #fafafa; border-color: #ddd; }
+    .btn-clear:hover { background: #fafafa; color: #444; border-color: #ddd; }
 
     .editor-grid {
       display: grid;
@@ -114,8 +141,8 @@
 
     @media (max-width: 850px) {
       .editor-grid { grid-template-columns: 1fr; }
-      .toolbar { justify-content: center; }
-      .actions { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+      .toolbar { flex-direction: column; align-items: stretch; }
+      .actions { display: grid; grid-template-columns: 1fr 1fr; }
     }
 
     .panel {
@@ -128,6 +155,7 @@
       box-shadow: var(--shadow);
       transition: all 0.3s ease;
     }
+    .panel:focus-within { border-color: var(--primary); box-shadow: 0 12px 30px rgba(240, 98, 146, 0.1); }
 
     .panel-header {
       padding: 16px 20px;
@@ -138,7 +166,7 @@
       align-items: center;
     }
 
-    .panel-title { font-size: 14px; font-weight: 700; color: var(--text-light); }
+    .panel-title { font-size: 14px; font-weight: 700; color: #555; }
 
     .status-badge {
       font-size: 11px;
@@ -152,7 +180,7 @@
 
     textarea {
       width: 100%;
-      height: 480px;
+      height: 520px;
       padding: 20px;
       border: none;
       resize: none;
@@ -163,14 +191,32 @@
       color: var(--text);
     }
 
-    #output { background: #fff; }
+    #output { background: #fdfdfd; color: #444; }
+
+    .panel-footer {
+      padding: 14px 20px;
+      font-size: 12px;
+      background: #fafafa;
+      border-top: 1px solid #f5f5f5;
+      color: #999;
+    }
+
+    footer {
+      padding: 20px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #9e9e9e;
+      letter-spacing: 0.3px;
+      font-weight: 500;
+      margin-top: 10px;
+    }
 
     #toast {
       position: fixed;
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
-      background: var(--text);
+      background: #333;
       color: white;
       padding: 12px 28px;
       border-radius: 50px;
@@ -178,6 +224,7 @@
       font-weight: 500;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
   </style>
@@ -185,13 +232,23 @@
 
 <body>
   <header>
-    <h1>블리비 홍대점 | 고객안내용 차트수정</h1>
+    <h1>회원권 내역 문자 발송</h1>
   </header>
 
   <div class="container">
     <div class="toolbar">
+      <div class="options">
+        <label class="option-pill">
+          <input type="checkbox" id="showMembership" checked>
+          <span>보유 회원권 정보</span>
+        </label>
+        <label class="option-pill">
+          <input type="checkbox" id="showPetitInfo">
+          <span>쁘띠 가능시술 안내</span>
+        </label>
+      </div>
       <div class="actions">
-        <button id="btnClear" class="btn btn-clear">초기화</button>
+        <button id="btnClear" class="btn btn-clear">CLEAR</button>
         <button id="btnCopy" class="btn btn-copy">결과 복사</button>
       </div>
     </div>
@@ -199,153 +256,176 @@
     <div class="editor-grid">
       <section class="panel">
         <div class="panel-header">
-          <span class="panel-title">원본 데이터 입력</span>
-          <span id="inputStatus" class="status-badge">대기중</span>
+          <span class="panel-title">차트입력</span>
+          <span id="inputStatus" class="status-badge">READY</span>
         </div>
-        <textarea id="input" placeholder="차트 내용을 붙여넣으세요."></textarea>
+        <textarea id="input" placeholder="차트 텍스트"></textarea>
+        <div class="panel-footer">
+          회원권 정보, 차감항목, 잔액 등이 포함된 텍스트 입력
+        </div>
       </section>
 
       <section class="panel">
         <div class="panel-header">
-          <span class="panel-title">정리된 결과</span>
+          <span class="panel-title">문자 발송용 변환결과</span>
+          <span id="outputStatus" class="status-badge">WAITING</span>
         </div>
-        <textarea id="output" placeholder="정리된 결과가 표시됩니다."></textarea>
+        <textarea id="output" readonly placeholder="변환된 문구가 여기에 표시됩니다."></textarea>
+        <textarea id="output" placeholder="변환된 문구가 여기에 표시됩니다."></textarea>
+        <div class="panel-footer" id="msgBox">
+          데이터를 입력하면 문구가 자동으로 생성됩니다.
+        </div>
       </section>
     </div>
+
+    <footer>
+      &copy; 2026. Designed & Developed by EUNBIN GA
+    </footer>
   </div>
 
-  <div id="toast">복사되었습니다.</div>
+  <div id="toast">텍스트 복사 완료</div>
 
   <script>
     const elInput = document.getElementById('input');
     const elOutput = document.getElementById('output');
-    const elStatus = document.getElementById('inputStatus');
+    const elShowMembership = document.getElementById('showMembership');
+    const elShowPetitInfo = document.getElementById('showPetitInfo');
     const elBtnCopy = document.getElementById('btnCopy');
     const elBtnClear = document.getElementById('btnClear');
     const elToast = document.getElementById('toast');
+    const elStatus = document.getElementById('inputStatus');
+    const elOutStatus = document.getElementById('outputStatus');
 
-    const kwPattern = /(승모근|이마|눈가|미간|자갈턱|종아리|허벅지|눈밑|입꼬리|스킨|사각턱|측두근|턱|광대|보상근|인중|침샘|주름)\s*(?:btx|b)\b/gi;
-    const fillerPattern = /(팔자|옆볼|눈밑고랑|눈밑|앞볼|미간|이마|관자|관자놀이|입술|애교|입꼬리|코|콧대|턱|턱끝|마리오넷|주름|볼)\s*f\b/gi;
+    // 오늘 날짜 구하기 (yy.MM.dd 형식)
+    function getToday() {
+      const now = new Date();
+      const yy = String(now.getFullYear()).slice(-2);
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      return `${yy}.${mm}.${dd}`;
+    }
 
-    function transformText(line) {
-      let v = line.trim();
-      if (!v) return null;
+    function formatLine(line) {
+      if (!line) return "";
 
-      // 1. 특정 텍스트 삭제 (1-1 등)
-     v = v.replace(/\b1-1\b/g, " ");
+      let formatted = line.trim()
+        .replace(/1회차/g, "")           // 1회차 제거
+        .replace(/\b1-1\b/g, "")         // 1-1 단독 표기 제거
+        .replace(/(\d+)-1/g, "$1회")     // 횟수 변환 (예: 5-1 -> 5회)
+        .replace(/\(하이\)/g, "(국산일반)")  // 대체어: 하이
+        .replace(/\(비에녹스\)/g, "(국산 고순도)"); // 대체어: 비에녹스
 
-// 1-2. 추가 요청 단어 삭제 (*마크뷰+, 마크뷰 등)
-// 특수문자(*)가 포함되어 있으므로 이스케이프(\*) 처리와 긴 단어부터 매칭되도록 순서를 배치했습니다.
-v = v.replace(/\*마크뷰\+|\*마크뷰|마크뷰완료|마크뷰\+|마크뷰|\*마크\+|\*마\+|\*마크/g, "");
-      
-      // 불필요한 줄 필터링
-      if (v.startsWith("L") || v.startsWith("★") || v.startsWith("원장님") || 
-          v.startsWith("**") || v.startsWith("특이사항") || v.startsWith("이름") || 
-          v.startsWith("내원경로") || v.startsWith("~") || v.includes("전화번호")) return null;
-
-      // 2. 기본 약어 치환
-      v = v.replace(/스보/g, "스킨보톡스")
-           .replace(/브제/g, "브라질리언 제모")
-           .replace(/얼전|풀페이스|풀페/g, "얼굴전체")
-           .replace(/겨제/g, "겨드랑이 제모")
-           .replace(/ta/gi, "염증주사")
-           .replace(/구득권/g, "구독권")
-           .replace(/셀바이오/g, "셀바이브")
-           .replace(/\bs[\.,]?\s*v\b/gi, "서비스");
-
-      v = v.replace(/비에녹스|비에|코어/g, "국산 고순도")
-           .replace(/하이(?!쿡스)|리즈|메디/g, "국산일반");
-
-      // 3. 회원권 패턴 (VIP 숫자 뒤에 '원' 붙지 않도록 미리 보호)
-      v = v.replace(/(VIP|vip|쁘(?:띠)?)\s?(\d+)\s?(?:전환)?\s?\(\s?(\d+)\s?(?:결제)?\s+(\d+)\s?(?:적립)?\s?\)/gi, (match, p1, p2, p3, p4) => {
-        const prefix = p1.toUpperCase().includes('VIP') ? 'VIP' : '쁘띠회원권';
-        return `PROTECTED_${prefix}${p2}전환(${p3}만원 결제, ${p4}만원적립)`;
-      });
-
-         v = v.replace(/(VIP|vip|쁘(?:띠)?)\s?(\d+)\s?\+\s?(\d+)(?:\([^)]*\))?/g, (match, p1, p2, p3) => {
-        const prefix = p1.includes('쁘') ? '쁘띠회원권' : 'VIP';
-        return `${prefix}${p2}만원+${p3}만원 적립`;
-      });
-
-      // 4. 잔액 패턴 보호
-     v = v.replace(/(?:잔액|잔여|잔금|잔|쁘잔)(?:\s|:|[-)>])+(\d{1,3}(?:[.,]\d{3})+|\d+)/g, (match, p1) => {
-  let numStr = p1.replace(/[.,]/g, "");
-  let num = parseInt(numStr, 10);
-  return !isNaN(num) ? `PROTECTED_잔액 ${num.toLocaleString()}원` : match;
-});
-
-      // 5. 쁘띠/필러 약어 변환
-      v = v.replace(kwPattern, (match, kw) => kw + "보톡스")
-           .replace(fillerPattern, (match, kw) => kw + "필러");
-
-      // 6. 금액 및 숫자 처리
-      // 마침표(.)나 쉼표(,)가 포함된 숫자열 전체를 찾아 처리
-      v = v.replace(/(\d{1,3}(?:[.,]\d{3})+|\d{3,12})/g, (match, p1, offset, string) => {
-        
-        // 주변 텍스트 확인 (이미 보호되었거나 단위가 붙었는지)
-        const before = string.substring(0, offset);
-        const after = string.substring(offset + match.length);
-        
-        if (before.includes("PROTECTED_")) return match;
-
-        // 뒤에 단위가 오면 그대로 반환 (샷, cc, 줄 등)
-        if (/^\s*(?:샷|cc|u|unit|유닛|회|개|팩|분|줄|세|만|결제|적립|전환)/i.test(after)) {
-            return match;
-        }
-
-        // 숫자 정제 (마침표, 쉼표 제거 후 재포맷)
-        let numStr = match.replace(/[.,]/g, "");
-        let num = parseInt(numStr, 10);
-        if (isNaN(num)) return match;
-        
-        let formatted = num.toLocaleString();
-
-        // 뒤에 이미 '원'이 있는지 확인
-        if (/^\s*원/.test(after)) {
-            return formatted;
-        }
-
-        return formatted + "원";
-      });
-
-      // 보호 태그 제거 및 중복 '원' 정리
-      return v.replace(/PROTECTED_/g, "")
-              .replace(/원원/g, "원")
-              .replace(/\s+/g, " ")
-              .trim();
+      return formatted.replace(/\s+/g, " ").trim();
     }
 
     function process() {
-      const raw = elInput.value;
-      if (!raw.trim()) {
+      const raw = elInput.value.trim();
+      if (!raw) {
         elOutput.value = "";
-        elStatus.textContent = "대기중";
+        elStatus.textContent = "READY";
+        elOutStatus.textContent = "WAITING";
         return;
       }
-      const lines = raw.split(/\r?\n/);
-      const results = lines.map(transformText).filter(x => x !== null && x.trim() !== "");
-      elOutput.value = results.join('\n');
-      elStatus.textContent = "완료";
+
+      const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
+      const today = getToday();
+
+      let membership = "";
+      let date = today; // 기본값은 오늘 날짜
+      let usageItems = [];
+      let total = "";
+      let balance = "";
+
+      // 데이터 파싱 루프
+      lines.forEach(line => {
+        // 1. 회원권 정보 및 구매일 파싱 (괄호 안의 날짜 패턴 매칭)
+        const membershipMatch = line.match(/\(([^/()]+)\/(\d{2}\.\d{2}\.\d{2})\)/);
+        if (membershipMatch) {
+          const buyDate = membershipMatch[2];
+          date = buyDate; // 차감 내역에 사용할 날짜 업데이트
+          const namePart = line.replace(/\(([^/()]+)\/(\d{2}\.\d{2}\.\d{2})\)/, "").trim();
+          membership = `${namePart}(${buyDate} 구매)`;
+          return;
+        }
+
+        // 2. 총액 파싱
+        if (line.startsWith("총")) {
+          total = line;
+          return;
+        }
+
+        // 3. 잔액 파싱
+        if (line.includes("잔액:")) {
+          balance = line;
+          return;
+        }
+
+        // 4. 차감 항목 (가격 '원'이 포함된 경우)
+        if (line.includes("원")) {
+          usageItems.push(formatLine(line));
+        }
+      });
+
+      // 최종 문구 조립
+      let result = "안녕하세요~ 블리비 홍대점의 담당실장 가은빈입니다♡ 내원해주셔서 감사드리며 회원권 이용 내역 안내 드립니다.\n\n";
+
+      if (elShowMembership.checked && membership) {
+        result += `■보유 회원권\n${membership}\n\n`;
+      }
+
+      if (usageItems.length > 0) {
+        result += `■차감내역(${date})\n`;
+        usageItems.forEach(item => {
+          result += `${item}\n`;
+        });
+        if (total) result += `${total}\n`;
+        result += `※부가세 포함 금액\n\n`;
+      }
+
+      if (balance) {
+        result += `■회원권 잔액(${date})\n`;
+        result += `${balance}\n\n`;
+      }
+
+      if (elShowPetitInfo.checked) {
+        result += `■쁘띠 가능시술\n제모/보톡스/필러/인모드/슈링크 1회/실리프팅/점 사마귀 비립종 제거/면역수액주사/윤곽주사/블리비V주사/블리비S주사\n\n`;
+      }
+
+      result += `오늘도 사랑스럽고 행복한 하루 보내세요♡ 감사합니다.\n\n`;
+      result += `문의 및 예약\n카카오톡 > 블리비의원 홍대\n전화문의 > 1833-2141`;
+
+      elOutput.value = result;
+      elStatus.textContent = "DONE";
+      elOutStatus.textContent = "COMPLETED";
+    }
+
+    function showToast(msg) {
+      elToast.textContent = msg;
+      elToast.classList.add('show');
+      setTimeout(() => elToast.classList.remove('show'), 2000);
     }
 
     elBtnCopy.addEventListener('click', () => {
       if (!elOutput.value) return;
       elOutput.select();
-      document.execCommand('copy');
-      elToast.classList.add('show');
-      setTimeout(() => elToast.classList.remove('show'), 2000);
+      try {
+        document.execCommand('copy');
+        showToast("텍스트 복사 완료");
+      } catch (err) {
+        showToast("복사 실패");
+      }
     });
 
     elBtnClear.addEventListener('click', () => {
       elInput.value = "";
       process();
+      elInput.focus();
     });
 
     elInput.addEventListener('input', process);
+    elShowMembership.addEventListener('change', process);
+    elShowPetitInfo.addEventListener('change', process);
+
+    process();
   </script>
-    <footer>
-      &copy; 2026. Designed & Developed by EUNBIN GA
-    </footer>
-  </div>
 </body>
-</html>
