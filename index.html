@@ -1,3 +1,7 @@
+<!-- Chosen Palette: Rose Pink & Soft Warm Neutrals -->
+<!-- Application Structure Plan: Interactive text parser that applies medical aesthetic terminology transformation rules (Botox, Filler, Laser name replacements, number-to-currency formatting, and VIP/Petite membership protection) before structuring into a final customer SMS text. -->
+<!-- Visualization & Content Choices: Pure JavaScript string transformation using Regular Expressions. Dynamic UI updating without external chart or SVG dependencies. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 <!doctype html>
 <html lang="ko">
 <head>
@@ -243,6 +247,10 @@
           <span>보유 회원권 정보</span>
         </label>
         <label class="option-pill">
+          <input type="checkbox" id="checkFilterN" checked>
+          <span>'ㄴ' 필터링</span>
+        </label>
+        <label class="option-pill">
           <input type="checkbox" id="showPetitInfo">
           <span>쁘띠 가능시술 안내</span>
         </label>
@@ -259,7 +267,7 @@
           <span class="panel-title">차트입력</span>
           <span id="inputStatus" class="status-badge">READY</span>
         </div>
-        <textarea id="input" placeholder="차트 텍스트"></textarea>
+        <textarea id="input" placeholder="차트 텍스트를 입력하세요"></textarea>
         <div class="panel-footer">
           회원권 정보, 차감항목, 잔액 등이 포함된 텍스트 입력
         </div>
@@ -271,7 +279,6 @@
           <span id="outputStatus" class="status-badge">WAITING</span>
         </div>
         <textarea id="output" readonly placeholder="변환된 문구가 여기에 표시됩니다."></textarea>
-        <textarea id="output" placeholder="변환된 문구가 여기에 표시됩니다."></textarea>
         <div class="panel-footer" id="msgBox">
           데이터를 입력하면 문구가 자동으로 생성됩니다.
         </div>
@@ -289,12 +296,18 @@
     const elInput = document.getElementById('input');
     const elOutput = document.getElementById('output');
     const elShowMembership = document.getElementById('showMembership');
+    const elCheckFilterN = document.getElementById('checkFilterN');
     const elShowPetitInfo = document.getElementById('showPetitInfo');
     const elBtnCopy = document.getElementById('btnCopy');
     const elBtnClear = document.getElementById('btnClear');
     const elToast = document.getElementById('toast');
     const elStatus = document.getElementById('inputStatus');
     const elOutStatus = document.getElementById('outputStatus');
+
+    const btxKeywords = "승모근|이마|눈가|미간|콧등|눈썹위|눈썹산|자갈턱|종아리|허벅지|눈밑|입꼬리|사각턱|파워사각턱|측두근|턱|광대|보상근|침샘";
+    const kwPattern = new RegExp(`(${btxKeywords}|스킨)\\s*(?:btx|b)\\b`, "gi");
+    const autoBtxPattern = new RegExp(`(${btxKeywords})(?!\\s*보톡스)(?=\\s*(?:하이|비에|코어|리즈|메디|디스포트|제오민|엘러간|\\d))`, "gi");
+    const fillerPattern = /(팔자|옆볼|눈밑고랑|눈밑|앞볼|미간|이마|관자|관자놀이|입술|애교|입꼬리|코|콧대|턱|턱끝|마리오넷|주름|볼)\s*f\b/gi;
 
     // 오늘 날짜 구하기 (yy.MM.dd 형식)
     function getToday() {
@@ -305,17 +318,65 @@
       return `${yy}.${mm}.${dd}`;
     }
 
+    function transformText(line) {
+      let v = line.trim();
+      if (!v) return null;
+
+      // 'ㄴ' 시작 라인 필터링
+      if (elCheckFilterN && elCheckFilterN.checked && v.startsWith("ㄴ")) {
+        if (!["하이쿡스", "팁", "1-1", "포함", "결제", "적립", "잔액", "잔여"].some(k => v.includes(k)) && !/\d{3,}/.test(v)) return null;
+      }
+      
+      v = v.replace(/\b1-1\b/g, " ").replace(/\*마크뷰\+|\*마크뷰|마크뷰완료|마크뷰\+|마크뷰|\*마크\+|\*마\+|\*마크/g, "");
+      if (["★", "원장님", "**", "특이사항", "이름", "내원경로", "~"].some(p => v.startsWith(p)) || v.includes("전화번호")) return null;
+      
+      v = v.replace(/인모드\s*(?:두가지|2가지)\s*(?:모드)?/g, "인모드 FX+FORMA");
+      v = v.replace(/(?:엠마오|엠바오)\s*(?:마취)?\s*(?:크림)?/g, "특수 마취 크림 ");
+
+      v = v
+        .replace(/(?<!스텔라\s*)리써(?!FX)/gi, "스텔라 리써FX")
+        .replace(/스텔라\s*IPL|IPL/gi, "스텔라 IPL")
+        .replace(/(셀바|셀바이오|LDM)(?!이브)/gi, "셀바이브")
+        .replace(/스보/g, "스킨보톡스")
+        .replace(/브제/g, "브라질리언 제모")
+        .replace(/에토좀\s*PTT|에토좀/gi, "에토좀 골드PTT")
+        .replace(/엔바이론\s*이온자임|이온자임|엔바이론/gi, "엔바이론 이온자임")
+        .replace(/오투덤\s*테라피|오투덤\s*산소테라피|오투덤|산소테라피/gi, "오투덤 산소테라피")
+        .replace(/얼전|풀페이스|풀페/g, "얼굴전체")
+        .replace(/겨제/g, "겨드랑이 제모")
+        .replace(/ta/gi, "염증주사")
+        .replace(/구득권/g, "구독권")
+        .replace(/\bs[\.,]?\s*v\b/gi, "서비스");
+
+      v = v
+        .replace(autoBtxPattern, "$1보톡스")
+        .replace(/비에녹스|(?<!엘라)비에|코어/gi, "국산 고순도")
+        .replace(/(덴[서써]티)\s*하이/gi, "$1 High")
+        .replace(/하이(?!쿡스)|리즈|메디/g, "국산일반");
+      
+      v = v.replace(/(VIP|vip|쁘(?:띠)?)\s?(\d+)\s?(?:전환)?\s?\(\s?(\d+)\s?(?:결제)?\s+(\d+)\s?(?:적립)?\s?\)/gi, (m, p1, p2, p3, p4) => `PROTECTED_${p1.toUpperCase().includes('VIP')?'VIP':'쁘띠회원권'}${p2}전환(${p3}만원 결제, ${p4}만원적립)`);
+      v = v.replace(/(VIP|vip|쁘(?:띠)?)\s?(\d+)\s?\+\s?(\d+)(?:\([^)]*\))?/gi, (m, p1, p2, p3) => `PROTECTED_${p1.includes('쁘')?'쁘띠회원권':'VIP'}${p2}만원+${p3}만원 적립`);
+      v = v.replace(/(?:잔액|잔여|잔금|잔|쁘잔)(?:\s|:|[-)>])+(\d{1,3}(?:[.,]\d{3})+|\d+)/g, (m, p1) => `PROTECTED_잔액 ${parseInt(p1.replace(/[.,]/g,""),10).toLocaleString()}원`);
+      
+      v = v.replace(kwPattern, "$1보톡스").replace(fillerPattern, "$1필러");
+      
+      v = v.replace(/(\d{1,3}(?:[.,]\d{3})+|\d{3,12})/g, (match, p1, offset, string) => {
+        if (string.substring(0, offset).includes("PROTECTED_")) return match;
+        if (/^\s*(?:샷|cc|u|unit|유닛|회|kj|J|분|줄|KJ|만|결제|적립|전환)/i.test(string.substring(offset+match.length))) return match;
+        return parseInt(match.replace(/[.,]/g,""),10).toLocaleString() + "원";
+      });
+      
+      return v.replace(/PROTECTED_/g, "").replace(/원원/g, "원").replace(/\s\s+/g, " ").trim();
+    }
+
     function formatLine(line) {
       if (!line) return "";
-
-      let formatted = line.trim()
-        .replace(/1회차/g, "")           // 1회차 제거
-        .replace(/\b1-1\b/g, "")         // 1-1 단독 표기 제거
-        .replace(/(\d+)-1/g, "$1회")     // 횟수 변환 (예: 5-1 -> 5회)
-        .replace(/\(하이\)/g, "(국산일반)")  // 대체어: 하이
-        .replace(/\(비에녹스\)/g, "(국산 고순도)"); // 대체어: 비에녹스
-
-      return formatted.replace(/\s+/g, " ").trim();
+      return line.trim()
+        .replace(/1회차/g, "")
+        .replace(/\b1-1\b/g, "")
+        .replace(/(\d+)-1/g, "$1회")
+        .replace(/\s+/g, " ")
+        .trim();
     }
 
     function process() {
@@ -327,54 +388,63 @@
         return;
       }
 
-      const lines = raw.split('\n').map(l => l.trim()).filter(l => l);
-      const today = getToday();
+      const rawLines = raw.split(/\r?\n/).map(l => l.trim()).filter(l => l);
+      const transformedLines = rawLines.map(transformText).filter(x => x !== null && x !== "");
 
+      const today = getToday();
       let membership = "";
-      let date = today; // 기본값은 오늘 날짜
+      let date = today;
       let usageItems = [];
       let total = "";
       let balance = "";
 
-      // 데이터 파싱 루프
-      lines.forEach(line => {
-        // 1. 회원권 정보 및 구매일 파싱 (괄호 안의 날짜 패턴 매칭)
+      // 원본 및 변환 라인 분석
+      rawLines.forEach(line => {
         const membershipMatch = line.match(/\(([^/()]+)\/(\d{2}\.\d{2}\.\d{2})\)/);
         if (membershipMatch) {
           const buyDate = membershipMatch[2];
-          date = buyDate; // 차감 내역에 사용할 날짜 업데이트
+          date = buyDate;
           const namePart = line.replace(/\(([^/()]+)\/(\d{2}\.\d{2}\.\d{2})\)/, "").trim();
-          membership = `${namePart}(${buyDate} 구매)`;
+          const transformedName = transformText(namePart) || namePart;
+          membership = `${transformedName}(${buyDate} 구매)`;
+        }
+      });
+
+      transformedLines.forEach(line => {
+        if (line.includes("구매)") && !membership) {
+          membership = line;
           return;
         }
-
-        // 2. 총액 파싱
         if (line.startsWith("총")) {
           total = line;
           return;
         }
-
-        // 3. 잔액 파싱
         if (line.includes("잔액:")) {
           balance = line;
           return;
         }
+        if (line.startsWith("잔액 ")) {
+          balance = line;
+          return;
+        }
 
-        // 4. 차감 항목 (가격 '원'이 포함된 경우)
-        if (line.includes("원")) {
-          usageItems.push(formatLine(line));
+        const cleaned = formatLine(line);
+        if (cleaned && !cleaned.includes("구매)") && !cleaned.startsWith("잔액")) {
+          if (!usageItems.includes(cleaned)) {
+            usageItems.push(cleaned);
+          }
         }
       });
 
-      // 최종 문구 조립
-      let result = "안녕하세요~ 블리비 홍대점의 담당실장 가은빈입니다♡ 내원해주셔서 감사드리며 회원권 이용 내역 안내 드립니다.\n\n";
+      // 최종 SMS 조립
+      let result = "안녕하세요! 오늘도 사랑스러운 블리비 홍대점입니다♡ 내원해주셔서 감사드리며 시술 내역 안내 드립니다.\n\n";
 
       if (elShowMembership.checked && membership) {
         result += `■보유 회원권\n${membership}\n\n`;
       }
 
       if (usageItems.length > 0) {
-        result += `■차감내역(${date})\n`;
+        result += `■ 내역(${date})\n`;
         usageItems.forEach(item => {
           result += `${item}\n`;
         });
@@ -383,16 +453,16 @@
       }
 
       if (balance) {
-        result += `■회원권 잔액(${date})\n`;
+        result += `■ `;
         result += `${balance}\n\n`;
       }
 
       if (elShowPetitInfo.checked) {
-        result += `■쁘띠 가능시술\n제모/보톡스/필러/인모드/슈링크 1회/실리프팅/점 사마귀 비립종 제거/면역수액주사/윤곽주사/블리비V주사/블리비S주사\n\n`;
+        result += `■ 쁘띠회원권 가능시술\n제모/보톡스/필러/인모드/슈링크 1회/실리프팅/점 사마귀 비립종 제거/면역수액주사/윤곽주사/블리비V주사/블리비S주사\n\n`;
       }
 
       result += `오늘도 사랑스럽고 행복한 하루 보내세요♡ 감사합니다.\n\n`;
-      result += `문의 및 예약\n카카오톡 > 블리비의원 홍대\n전화문의 > 1833-2141`;
+      result += `■ 문의 및 예약\n카카오톡 > 블리비의원 홍대\n전화문의 > 1833-2141`;
 
       elOutput.value = result;
       elStatus.textContent = "DONE";
@@ -409,8 +479,12 @@
       if (!elOutput.value) return;
       elOutput.select();
       try {
-        document.execCommand('copy');
-        showToast("텍스트 복사 완료");
+        navigator.clipboard.writeText(elOutput.value).then(() => {
+          showToast("텍스트 복사 완료");
+        }).catch(() => {
+          document.execCommand('copy');
+          showToast("텍스트 복사 완료");
+        });
       } catch (err) {
         showToast("복사 실패");
       }
@@ -424,8 +498,10 @@
 
     elInput.addEventListener('input', process);
     elShowMembership.addEventListener('change', process);
+    if (elCheckFilterN) elCheckFilterN.addEventListener('change', process);
     elShowPetitInfo.addEventListener('change', process);
 
     process();
   </script>
 </body>
+</html>
